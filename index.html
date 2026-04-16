@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXORA | Modelo de Cambio de Lewin</title>
+  <style>
+    :root{
+      --nexora-blue:#1f3c88;
+      --nexora-cyan:#15b7d6;
+      --nexora-purple:#6f42c1;
+      --nexora-dark:#1f2937;
+      --nexora-gray:#6b7280;
+      --nexora-light:#f8fafc;
+      --nexora-border:#e5e7eb;
+    }
+
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+
+    body{
+      font-family: Arial, Helvetica, sans-serif;
+      background:#ffffff;
+      color:var(--nexora-dark);
+      line-height:1.6;
+    }
+
+    .container{
+      width:min(1180px, 92%);
+      margin:0 auto;
+    }
+
+    header{
+      background:#ffffff;
+      border-bottom:1px solid var(--nexora-border);
+      padding:22px 0 18px;
+      position:sticky;
+      top:0;
+      z-index:100;
+    }
+
+    .header-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      flex-wrap:wrap;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .brand img{
+      width:110px;
+      height:auto;
+      display:block;
+    }
+
+    .brand-text h1{
+      font-size:1.35rem;
+      color:var(--nexora-blue);
+      font-weight:700;
+      margin-bottom:2px;
+    }
+
+    .brand-text p{
+      font-size:0.92rem;
+      color:var(--nexora-gray);
+    }
+
+    nav a{
+      text-decoration:none;
+      color:var(--nexora-blue);
+      margin-left:18px;
+      font-weight:600;
+      font-size:0.95rem;
+    }
+
+    .hero{
+      padding:72px 0 52px;
+      background:linear-gradient(to bottom, #ffffff 0%, #f8fbff 100%);
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.15fr 0.85fr;
+      gap:38px;
+      align-items:center;
+    }
+
+    .eyebrow{
+      color:var(--nexora-purple);
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-size:.82rem;
+      margin-bottom:14px;
+    }
+
+    .hero h2{
+      font-size:2.55rem;
+      line-height:1.15;
+      color:var(--nexora-blue);
+      margin-bottom:18px;
+    }
+
+    .hero p{
+      font-size:1.05rem;
+      color:#4b5563;
+      margin-bottom:24px;
+      max-width:760px;
+    }
+
+    .hero-actions{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      display:inline-block;
+      padding:13px 20px;
+      border-radius:10px;
+      text-decoration:none;
+      font-weight:700;
+      transition:.2s ease;
+    }
+
+    .btn-primary{
+      background:var(--nexora-blue);
+      color:#fff;
+    }
+
+    .btn-primary:hover{
+      background:#17306f;
+    }
+
+    .btn-secondary{
+      border:1px solid var(--nexora-border);
+      color:var(--nexora-blue);
+      background:#fff;
+    }
+
+    .hero-card{
+      background:#fff;
+      border:1px solid var(--nexora-border);
+      border-radius:18px;
+      padding:26px;
+      box-shadow:0 12px 30px rgba(31,60,136,.08);
+    }
+
+    .hero-card h3{
+      color:var(--nexora-blue);
+      font-size:1.1rem;
+      margin-bottom:14px;
+    }
+
+    .hero-card ul{
+      padding-left:18px;
+      color:#4b5563;
+    }
+
+    .hero-card li{
+      margin-bottom:10px;
+    }
+
+    section{
+      padding:62px 0;
+    }
+
+    .section-title{
+      text-align:center;
+      margin-bottom:16px;
+      color:var(--nexora-blue);
+      font-size:2rem;
+    }
+
+    .section-subtitle{
+      text-align:center;
+      color:var(--nexora-gray);
+      max-width:860px;
+      margin:0 auto 38px;
+      font-size:1rem;
+    }
+
+    .problem-grid{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:20px;
+    }
+
+    .mini-card{
+      background:#fff;
+      border:1px solid var(--nexora-border);
+      border-radius:16px;
+      padding:22px;
+    }
+
+    .mini-card h3{
+      color:var(--nexora-blue);
+      font-size:1rem;
+      margin-bottom:10px;
+    }
+
+    .mini-card p{
+      color:#4b5563;
+      font-size:.96rem;
+    }
+
+    .phases{
+      background:var(--nexora-light);
+      border-top:1px solid var(--nexora-border);
+      border-bottom:1px solid var(--nexora-border);
+    }
+
+    .phase-grid{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:24px;
+    }
+
+    .phase-card{
+      background:#fff;
+      border:1px solid var(--nexora-border);
+      border-radius:18px;
+      padding:26px;
+      box-shadow:0 10px 26px rgba(0,0,0,.04);
+      display:flex;
+      flex-direction:column;
+      min-height:310px;
+    }
+
+    .phase-number{
+      width:44px;
+      height:44px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-weight:700;
+      margin-bottom:16px;
+    }
+
+    .phase-1 .phase-number{ background:var(--nexora-cyan); }
+    .phase-2 .phase-number{ background:var(--nexora-blue); }
+    .phase-3 .phase-number{ background:var(--nexora-purple); }
+
+    .phase-card h3{
+      font-size:1.2rem;
+      color:var(--nexora-blue);
+      margin-bottom:10px;
+    }
+
+    .phase-card p{
+      color:#4b5563;
+      margin-bottom:14px;
+      font-size:.96rem;
+    }
+
+    .phase-card ul{
+      padding-left:18px;
+      color:#4b5563;
+      margin-bottom:18px;
+    }
+
+    .phase-card li{
+      margin-bottom:8px;
+    }
+
+    .phase-card a{
+      margin-top:auto;
+      text-decoration:none;
+      color:var(--nexora-blue);
+      font-weight:700;
+    }
+
+    .cta{
+      text-align:center;
+      padding:72px 0 84px;
+    }
+
+    .cta h3{
+      color:var(--nexora-blue);
+      font-size:2rem;
+      margin-bottom:12px;
+    }
+
+    .cta p{
+      color:var(--nexora-gray);
+      max-width:820px;
+      margin:0 auto 22px;
+    }
+
+    footer{
+      border-top:1px solid var(--nexora-border);
+      padding:24px 0 32px;
+      text-align:center;
+      color:var(--nexora-gray);
+      font-size:.9rem;
+    }
+
+    @media (max-width: 960px){
+      .hero-grid,
+      .problem-grid,
+      .phase-grid{
+        grid-template-columns:1fr;
+      }
+
+      .hero h2{
+        font-size:2rem;
+      }
+
+      nav{
+        width:100%;
+      }
+
+      nav a{
+        margin-left:0;
+        margin-right:16px;
+        display:inline-block;
+        margin-top:8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="Logo_nexora.png" alt="Logo NEXORA">
+        <div class="brand-text">
+          <h1>NEXORA Market</h1>
+          <p>Modelo de cambio organizacional aplicado a la operación</p>
+        </div>
+      </div>
+
+      <nav>
+        <a href="#contexto">Contexto</a>
+        <a href="#fases">Fases</a>
+        <a href="lewin_detalle.html">Detalle completo</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow">Gestión del cambio</div>
+        <h2>Modelo de Lewin aplicado a la integración operativa de NEXORA</h2>
+        <p>
+          Esta página presenta la lógica de implementación del modelo de Lewin en NEXORA,
+          considerando un equipo nuevo con experiencias previas diversas, la necesidad de
+          estandarizar procesos y la consolidación de una identidad operativa común.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="lewin_detalle.html">Ver desarrollo completo</a>
+          <a class="btn btn-secondary" href="#fases">Explorar fases</a>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <h3>Propósito ejecutivo</h3>
+        <ul>
+          <li>Alinear equipos nuevos con una sola forma de trabajo.</li>
+          <li>Estandarizar procesos críticos de operación.</li>
+          <li>Reducir variabilidad, retrabajos y resistencia al cambio.</li>
+          <li>Convertir el cambio en una práctica estable y escalable.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="contexto">
+    <div class="container">
+      <h2 class="section-title">Contexto del cambio en NEXORA</h2>
+      <p class="section-subtitle">
+        El reto no es solo implementar procesos nuevos, sino integrar un equipo recientemente incorporado,
+        con antecedentes, hábitos y criterios distintos, dentro de una estructura operativa homogénea.
+      </p>
+
+      <div class="problem-grid">
+        <div class="mini-card">
+          <h3>Situación inicial</h3>
+          <p>
+            Los integrantes provienen de experiencias organizacionales distintas y traen prácticas previas
+            que pueden generar dispersión operativa.
+          </p>
+        </div>
+
+        <div class="mini-card">
+          <h3>Problema central</h3>
+          <p>
+            Sin un modelo de transición, la diversidad de criterios puede traducirse en desalineación,
+            pérdida de eficiencia y dificultad para escalar.
+          </p>
+        </div>
+
+        <div class="mini-card">
+          <h3>Respuesta propuesta</h3>
+          <p>
+            Aplicar el modelo de Lewin como mecanismo de integración organizacional, no solo como herramienta
+            de cambio técnico.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="phases" id="fases">
+    <div class="container">
+      <h2 class="section-title">Fases del modelo</h2>
+      <p class="section-subtitle">
+        Cada fase responde a una necesidad distinta: romper paradigmas previos, construir un sistema común
+        y consolidar una identidad operativa estable.
+      </p>
+
+      <div class="phase-grid">
+        <div class="phase-card phase-1">
+          <div class="phase-number">1</div>
+          <h3>Descongelar</h3>
+          <p>
+            Preparar a la organización y al equipo para abandonar hábitos anteriores y reconocer que el
+            modelo previo no es suficiente para la realidad de NEXORA.
+          </p>
+          <ul>
+            <li>Diagnóstico inicial de experiencias previas.</li>
+            <li>Comunicación clara de la visión operativa.</li>
+            <li>Generación de urgencia basada en datos.</li>
+          </ul>
+          <a href="lewin_detalle.html">Ver desarrollo completo</a>
+        </div>
+
+        <div class="phase-card phase-2">
+          <div class="phase-number">2</div>
+          <h3>Cambiar</h3>
+          <p>
+            Implementar procesos, reglas y formas de trabajo comunes, integrando conocimiento previo sin
+            permitir fragmentación del sistema.
+          </p>
+          <ul>
+            <li>Diseño de procesos claros y documentados.</li>
+            <li>Capacitación y alineación cultural.</li>
+            <li>Pilotos operativos y ajustes controlados.</li>
+          </ul>
+          <a href="lewin_detalle.html">Ver desarrollo completo</a>
+        </div>
+
+        <div class="phase-card phase-3">
+          <div class="phase-number">3</div>
+          <h3>Recongelar</h3>
+          <p>
+            Consolidar el nuevo modelo como estándar de operación, evitando regresiones a prácticas anteriores
+            y fortaleciendo la cultura organizacional.
+          </p>
+          <ul>
+            <li>Documentación y manuales operativos.</li>
+            <li>KPIs para control y seguimiento.</li>
+            <li>Refuerzo cultural y supervisión continua.</li>
+          </ul>
+          <a href="lewin_detalle.html">Ver desarrollo completo</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="container">
+      <h3>El cambio no consiste en adoptar procesos aislados</h3>
+      <p>
+        En NEXORA, el cambio requiere transformar distintas experiencias previas en un solo sistema coherente,
+        medible y sostenible. El modelo de Lewin funciona aquí como estructura de alineación organizacional.
+      </p>
+      <a class="btn btn-primary" href="lewin_detalle.html">Ir al análisis detallado</a>
+    </div>
+  </section>
+
+  <footer>
+    © NEXORA Market · Modelo de gestión del cambio · Sitio de presentación organizacional
+  </footer>
+
+</body>
+</html>
