@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXORA — Modelo de Cambio de Lewin</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #f5f5f0;
+    color: #1a1a18;
+    min-height: 100vh;
+    padding: 32px 16px 48px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  .page-header h1 {
+    font-size: 26px;
+    font-weight: 600;
+    color: #1a1a18;
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+  }
+  .page-header p {
+    font-size: 14px;
+    color: #6b6b66;
+  }
+
+  .diagram-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px 28px 36px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.07);
+  }
+
+  /* ── FASE HEADER ── */
+  .fase {
+    border-radius: 12px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .fase-left { display: flex; align-items: center; gap: 12px; }
+  .fase-num {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    white-space: nowrap;
+  }
+  .fase-title {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+  }
+  .fase-badge {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    opacity: 0.85;
+  }
+
+  /* Azul */
+  .fase-1 { background: #E6F1FB; }
+  .fase-1 .fase-num, .fase-1 .fase-title { color: #0C447C; }
+  .fase-1 .fase-badge { background: #B5D4F4; color: #0C447C; }
+
+  /* Teal */
+  .fase-2 { background: #E1F5EE; }
+  .fase-2 .fase-num, .fase-2 .fase-title { color: #085041; }
+  .fase-2 .fase-badge { background: #9FE1CB; color: #085041; }
+
+  /* Purple */
+  .fase-3 { background: #EEEDFE; }
+  .fase-3 .fase-num, .fase-3 .fase-title { color: #3C3489; }
+  .fase-3 .fase-badge { background: #CECBF6; color: #3C3489; }
+
+  /* ── PASOS ── */
+  .pasos-grid {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .pasos-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .pasos-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .pasos-grid.cols-2-top { grid-template-columns: repeat(3, 1fr); }
+
+  .paso {
+    background: #f9f8f4;
+    border: 1px solid rgba(0,0,0,0.09);
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor: default;
+    transition: box-shadow 0.15s, transform 0.15s;
+  }
+  .paso:hover {
+    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+  }
+  .paso-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a18;
+    margin-bottom: 3px;
+    line-height: 1.3;
+  }
+  .paso-sub {
+    font-size: 11.5px;
+    color: #6b6b66;
+    line-height: 1.4;
+  }
+
+  /* Arrow entre pasos horizontales */
+  .arrow-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .arrow-row .paso { flex: 1; }
+  .arrow-connector {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    color: #b0aea6;
+    font-size: 18px;
+    user-select: none;
+  }
+
+  /* Segunda fila fase 2 */
+  .pasos-sub {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
+    padding: 0 40px;
+  }
+
+  /* Descripción */
+  .desc-box {
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: #4a4a47;
+    margin-bottom: 0;
+    border: 1px solid rgba(0,0,0,0.07);
+  }
+  .desc-1 { background: #EEF6FD; }
+  .desc-2 { background: #E8F7F2; }
+  .desc-3 { background: #F3F2FE; }
+
+  /* Flecha entre fases */
+  .fase-connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 0;
+    color: #9c9a92;
+    font-size: 12px;
+  }
+  .fase-connector svg { opacity: 0.5; }
+
+  /* Leyenda */
+  .leyenda {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .leyenda-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: #5a5a56;
+  }
+  .leyenda-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+  }
+  .dot-blue   { background: #378ADD; }
+  .dot-teal   { background: #1D9E75; }
+  .dot-purple { background: #7F77DD; }
+
+  /* Modal de detalle */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: 14px;
+    padding: 28px 28px 24px;
+    max-width: 560px;
+    width: 100%;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+    position: relative;
+  }
+  .modal h3 { font-size: 17px; font-weight: 600; margin-bottom: 10px; color: #1a1a18; }
+  .modal p  { font-size: 13.5px; line-height: 1.7; color: #4a4a47; }
+  .modal-close {
+    position: absolute;
+    top: 14px; right: 16px;
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #9c9a92;
+    line-height: 1;
+  }
+  .modal-close:hover { color: #1a1a18; }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .pasos-grid.cols-3 { grid-template-columns: 1fr; }
+    .arrow-row { flex-direction: column; }
+    .arrow-connector { transform: rotate(90deg); }
+    .pasos-sub { grid-template-columns: 1fr; padding: 0; }
+    .fase { flex-direction: column; align-items: flex-start; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>NEXORA — Modelo de Cambio de Lewin</h1>
+  <p>Proceso de transformación organizacional · Haz clic en cualquier paso para ver el detalle</p>
+</div>
+
+<div class="diagram-wrap">
+
+  <!-- ════ FASE 1: DESCONGELAR ════ -->
+  <div class="fase fase-1">
+    <div class="fase-left">
+      <span class="fase-num">Fase 1</span>
+      <span class="fase-title">Descongelar (Unfreeze)</span>
+    </div>
+    <span class="fase-badge">Preparación</span>
+  </div>
+
+  <div class="arrow-row">
+    <div class="paso" onclick="openModal('Diagnóstico inicial', 'Se mapean las prácticas previas de cada integrante del equipo, identificando cómo operaron en contextos anteriores y las posibles resistencias derivadas de su experiencia. Esta etapa parte del reconocimiento de que el equipo es de reciente integración y proviene de distintas experiencias organizacionales.')">
+      <div class="paso-title">Diagnóstico inicial</div>
+      <div class="paso-sub">Mapear prácticas y resistencias previas</div>
+    </div>
+    <div class="arrow-connector">→</div>
+    <div class="paso" onclick="openModal('Comunicación estratégica', 'El liderazgo comunica de manera clara y estructurada la propuesta de valor de NEXORA, destacando la necesidad de estandarizar procesos para asegurar escalabilidad, calidad y control operativo. El objetivo es que el equipo entienda que la integración no consiste en adaptar la organización a prácticas individuales, sino en construir un modelo común de operación.')">
+      <div class="paso-title">Comunicación estratégica</div>
+      <div class="paso-sub">Propuesta de valor de NEXORA</div>
+    </div>
+    <div class="arrow-connector">→</div>
+    <div class="paso" onclick="openModal('Sentido de urgencia', 'Se genera un sentido de urgencia basado en datos concretos: ineficiencias detectadas, retrabajos identificados y riesgos en la experiencia del cliente. Esta información tangible motiva al equipo a romper hábitos y paradigmas anteriores, creando las condiciones para adoptar el nuevo modelo operativo.')">
+      <div class="paso-title">Sentido de urgencia</div>
+      <div class="paso-sub">Datos concretos e ineficiencias</div>
+    </div>
+  </div>
+
+  <div class="desc-box desc-1">
+    Romper modelos mentales previos. Identificar resistencias y construir un modelo común de operación estandarizado que asegure escalabilidad, calidad y control operativo dentro de NEXORA.
+  </div>
+
+  <!-- Conector entre fases -->
+  <div class="fase-connector">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M8 2v12M3 9l5 5 5-5" stroke="#9c9a92" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Transición
+  </div>
+
+  <!-- ════ FASE 2: CAMBIAR ════ -->
+  <div class="fase fase-2">
+    <div class="fase-left">
+      <span class="fase-num">Fase 2</span>
+      <span class="fase-title">Cambiar (Change)</span>
+    </div>
+    <span class="fase-badge">Implementación</span>
+  </div>
+
+  <div class="arrow-row">
+    <div class="paso" onclick="openModal('Diseño de procesos', 'Se diseñan procesos claros, estructurados y documentados que incluyen flujos de trabajo específicos para áreas críticas como gestión de pedidos, atención al cliente y onboarding de vendedores. La documentación garantiza que todos los integrantes operen bajo los mismos estándares.')">
+      <div class="paso-title">Diseño de procesos</div>
+      <div class="paso-sub">Flujos documentados por área</div>
+    </div>
+    <div class="arrow-connector">→</div>
+    <div class="paso" onclick="openModal('Capacitación', 'La capacitación actúa como mecanismo de alineación cultural, no solo como transferencia de conocimiento. Establece explícitamente cómo se opera dentro de NEXORA, generando un lenguaje y una forma de trabajo comunes entre todos los integrantes del equipo.')">
+      <div class="paso-title">Capacitación</div>
+      <div class="paso-sub">Alineación cultural del equipo</div>
+    </div>
+    <div class="arrow-connector">→</div>
+    <div class="paso" onclick="openModal('Pilotos y ajustes', 'Se implementan esquemas piloto que permiten validar los procesos antes de su adopción total, reduciendo riesgos y facilitando ajustes en tiempo real. Esta estrategia permite identificar fricciones operativas y corregirlas antes de escalar el modelo a toda la organización.')">
+      <div class="paso-title">Pilotos y ajustes</div>
+      <div class="paso-sub">Validación antes de escalar</div>
+    </div>
+  </div>
+
+  <div class="pasos-sub">
+    <div class="paso" onclick="openModal('Gestión del conocimiento', 'El conocimiento previo de los integrantes se canaliza de manera controlada para enriquecer el modelo sin fragmentarlo. Se permiten aportes de mejora derivados de experiencias anteriores, pero bajo un proceso estructurado que asegura coherencia con el sistema operativo de NEXORA.')">
+      <div class="paso-title">Gestión del conocimiento</div>
+      <div class="paso-sub">Aportes controlados del equipo</div>
+    </div>
+    <div class="paso" onclick="openModal('Liderazgo facilitador', 'El liderazgo actúa como facilitador y regulador del cambio, asegurando que el proceso avance sin perder coherencia. Su rol es integrar personas, procesos y objetivos en un mismo sistema funcional, gestionando tensiones entre las prácticas anteriores y el nuevo modelo.')">
+      <div class="paso-title">Liderazgo facilitador</div>
+      <div class="paso-sub">Coherencia y regulación del cambio</div>
+    </div>
+  </div>
+
+  <div class="desc-box desc-2">
+    Transformación técnica y conductual. Implementar procesos en gestión de pedidos, atención al cliente y onboarding de vendedores bajo un modelo operativo unificado. El cambio no es solo técnico: alinea experiencias previas bajo una identidad común.
+  </div>
+
+  <!-- Conector entre fases -->
+  <div class="fase-connector">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M8 2v12M3 9l5 5 5-5" stroke="#9c9a92" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Consolidación
+  </div>
+
+  <!-- ════ FASE 3: RECONGELAR ════ -->
+  <div class="fase fase-3">
+    <div class="fase-left">
+      <span class="fase-num">Fase 3</span>
+      <span class="fase-title">Recongelar (Refreeze)</span>
+    </div>
+    <span class="fase-badge">Estabilización</span>
+  </div>
+
+  <div class="arrow-row">
+    <div class="paso" onclick="openModal('Documentación formal', 'Los procesos se formalizan mediante documentación clara: manuales operativos y lineamientos internos que definen de manera precisa cómo deben ejecutarse las actividades. Esta formalización es el principal mecanismo para evitar la regresión a prácticas anteriores.')">
+      <div class="paso-title">Documentación formal</div>
+      <div class="paso-sub">Manuales y lineamientos internos</div>
+    </div>
+    <div class="arrow-connector">→</div>
+    <div class="paso" onclick="openModal('KPIs de desempeño', 'Se establecen indicadores de desempeño (KPIs) que permiten medir la efectividad de los nuevos procesos: tiempos de respuesta, calidad en la atención al cliente, cumplimiento de entregables y otros métricas operativas clave. Los KPIs hacen visible el progreso y detectan desviaciones a tiempo.')">
+      <div class="paso-title">KPIs de desempeño</div>
+      <div class="paso-sub">Tiempos, calidad y entregables</div>
+    </div>
+    <div class="arrow-connector">→</div>
+    <div class="paso" onclick="openModal('Integración cultural', 'El objetivo final es que el equipo adopte los procesos no por obligación, sino como parte de la forma natural de trabajar en NEXORA. El liderazgo refuerza continuamente los estándares mediante seguimiento, retroalimentación y control operativo, hasta que el cambio se convierte en una característica estructural de la organización.')">
+      <div class="paso-title">Integración cultural</div>
+      <div class="paso-sub">Adopción natural del modelo</div>
+    </div>
+  </div>
+
+  <div class="desc-box desc-3">
+    Consolidar una identidad operativa común. Prevenir la regresión mediante seguimiento continuo, retroalimentación y control operativo. Esta fase garantiza estabilidad, coherencia y capacidad de escalamiento sostenible para NEXORA.
+  </div>
+
+  <!-- Leyenda -->
+  <div class="leyenda">
+    <div class="leyenda-item"><span class="leyenda-dot dot-blue"></span> Descongelar</div>
+    <div class="leyenda-item"><span class="leyenda-dot dot-teal"></span> Cambiar</div>
+    <div class="leyenda-item"><span class="leyenda-dot dot-purple"></span> Recongelar</div>
+  </div>
+
+</div>
+
+<!-- Modal de detalle -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModalBtn()">×</button>
+    <h3 id="modal-title"></h3>
+    <p id="modal-body"></p>
+  </div>
+</div>
+
+<script>
+function openModal(title, body) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').textContent = body;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModalBtn() {
+  document.getElementById('modal').classList.remove('open');
+}
+function closeModal(e) {
+  if (e.target === document.getElementById('modal')) closeModalBtn();
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeModalBtn();
+});
+</script>
+
+</body>
+</html>
